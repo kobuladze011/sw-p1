@@ -1,208 +1,376 @@
 // src/pages/Home.jsx
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useCurrency } from "../components/CurrencyContext";
 import { useCoffeeData } from "../hooks/useCoffeeData";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  const { convertPrice } = useCurrency();
+  const { currency, toggleCurrency, convertPrice } = useCurrency();
   const { ingredients, coffees, loading, error } = useCoffeeData();
+  const [activeTab, setActiveTab] = useState("coffees"); // "coffees" or "ingredients"
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  if (loading) return <LoadingScreen>Loading...</LoadingScreen>;
+  if (error) return <ErrorScreen>Error loading data</ErrorScreen>;
 
   return (
     <Container>
+      {/* Hero Section with Header */}
       <Hero>
-        <TitleDiv>
-          <Titletext>Coffee Shop</Titletext>
-          <Group25>
-            <Coffees>Coffees</Coffees>
-          </Group25>
-        </TitleDiv>
-        <Group23>
-          <Symplyclever>SIMPLY CLEVER</Symplyclever>
-          <COffees>BEST COFFEE</COffees>
-          <LoremIpsum>Lorem Ipsum Dolor met sit dolor</LoremIpsum>
-        </Group23>
-        <Divider73 />
+        <Header>
+          <Logo>
+            <CoffeeIcon>☕</CoffeeIcon>
+            <LogoText>Coffee Shop</LogoText>
+          </Logo>
+          <NavButton>Coffees</NavButton>
+        </Header>
+        <HeroContent>
+          <SimplyClever>SIMPLY CLEVER</SimplyClever>
+          <BestCoffee>BEST COFFEE</BestCoffee>
+          <HeroSubtext>Lorem Ipsum Dolor met sit dolor</HeroSubtext>
+        </HeroContent>
       </Hero>
 
-      {/* Coffees Section */}
-      <Section>
-        <SectionTitle to={`/ingredients`}>All Ingredients</SectionTitle>
-        <SectionTitle to={`/coffees/`}>All Coffees</SectionTitle>
-      </Section>
+      {/* Main Content Section */}
+      <MainContent>
+        <SectionHeader>
+          <TabsContainer>
+            <Tab 
+              $active={activeTab === "coffees"} 
+              onClick={() => setActiveTab("coffees")}
+            >
+              All Coffees
+            </Tab>
+            <Tab 
+              $active={activeTab === "ingredients"} 
+              onClick={() => setActiveTab("ingredients")}
+            >
+              All Ingredients
+            </Tab>
+          </TabsContainer>
+          <CurrencyButton onClick={toggleCurrency}>{currency}</CurrencyButton>
+        </SectionHeader>
+
+        <CardGrid>
+          {activeTab === "coffees" ? (
+            coffees.map((coffee) => (
+              <Card key={coffee.id} to={`/coffees/${coffee.id}`}>
+                <CardImage>
+                  <img src={getCoffeeImage(coffee.title)} alt={coffee.title} />
+                </CardImage>
+                <CardInfo>
+                  <CardName>{coffee.title}</CardName>
+                  <CardPrice>{convertPrice(coffee.coffeePrice)}</CardPrice>
+                </CardInfo>
+                <QRCode>
+                  <QRIcon>⊞</QRIcon>
+                </QRCode>
+              </Card>
+            ))
+          ) : (
+            ingredients.map((ingredient) => (
+              <Card key={ingredient.id} to={`/ingredients/${ingredient.id}`}>
+                <CardImage $isIngredient>
+                  <IngredientEmoji>{getIngredientIcon(ingredient.name)}</IngredientEmoji>
+                </CardImage>
+                <CardInfo>
+                  <CardName>{ingredient.name}</CardName>
+                  <CardPrice>+{convertPrice(ingredient.price)}</CardPrice>
+                </CardInfo>
+                <QRCode>
+                  <QRIcon>⊞</QRIcon>
+                </QRCode>
+              </Card>
+            ))
+          )}
+        </CardGrid>
+      </MainContent>
     </Container>
   );
 }
 
+// Helper function to get coffee images
+function getCoffeeImage(title) {
+  const images = {
+    "Latte": "/images/cappuccino.jpg",
+    "Cappuccino": "/images/cappuccino.jpg",
+    "Mocha": "/images/mocha.jpg",
+    "Caramel Latte": "/images/caramel.jpg",
+    "Vanilla Coffee": "/images/americano.avif",
+  };
+  return images[title] || "/images/cappuccino.jpg";
+}
+
+// Helper function to get icons for ingredients
+function getIngredientIcon(name) {
+  const icons = {
+    "Chocolate Syrup": "🍫",
+    "Caramel Syrup": "🍯",
+    "Whipped Cream": "🍦",
+    "Cinnamon": "🌿",
+    "Vanilla Syrup": "🌸",
+    "Hazelnut Syrup": "🌰",
+  };
+  return icons[name] || "✨";
+}
+
 /* Styled Components */
 const Container = styled.div`
-  font-family: Arial, sans-serif;
-  background: #f0eeed;
-  width: 1440px;
-  padding-bottom: 200px; /* extra space at the bottom */
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  width: 100%;
 `;
 
 const Hero = styled.div`
-  height: 653px;
-  width: 1440px;
+  width: 100%;
+  height: 300px;
   background: url("/images/hero.jpg") center/cover no-repeat;
-  display: flex;
-  margin: 10px, 10px;
-  align-items: center;
-  justify-content: center;
   position: relative;
 `;
 
-const Section = styled.div`
-  padding: 40px 20px;
-  padding-bottom: 80px;
-  left: 1080px;
-  transform: rotate(0deg);
-  opacity: 1;
-  margin-left: 108px;
-`;
-
-const SectionTitle = styled(Link)`
-  display: inline-block; /* ensures clickable area */
-  margin-bottom: 20px;
-  background-color: transparent;
-  color: black;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 36px;
-  text-decoration: none;
-  cursor: pointer;
-  display: block;
-`;
-
-const TitleDiv = styled.div`
-  width: 1236px; /* add units */
-  height: 45px; /* add units */
-  position: absolute; /* needed for top/left positioning */
-  top: 11px;
-  left: 102px;
-  transform: rotate(0deg); /* replaces 'angle: 0 deg' */
-  opacity: 1;
-`;
-
-const Titletext = styled.h1`
-  width: 149px; /* add units */
-  height: 24px; /* add units */
-  position: absolute; /* needed if using top/left */
-  top: 18px;
-  left: 15px;
-  transform: rotate(0deg); /* replaces angle */
-  opacity: 1;
-  font-family: "Inter", sans-serif;
-  font-weight: 600; /* Semi-bold weight */
-  font-style: normal; /* use 'normal' or 'italic', 'Semi Bold' is not valid */
-  font-size: 20px; /* font size */
-  line-height: 1; /* 100% = 1 in CSS */
-  letter-spacing: 0.14em;
-  color: #f0eeed;
-`;
-
-const Group25 = styled.div`
-  width: 148px; /* add units */
-  height: 45px; /* add units */
-  position: absolute; /* needed for top/left positioning */
-  top: 11px;
-  left: 1100px;
-  transform: rotate(0deg); /* replaces angle */
-  opacity: 1;
-  border-radius: 5px;
-  background-color: #1f1f22;
-`;
-
-const Coffees = styled.h2`
-  width: 76px; /* add units */
-  height: 24px; /* add units */
-  position: absolute; /* needed for top/left */
-  top: 11px;
-  left: 36px;
-  transform: rotate(0deg); /* replaces angle */
-  opacity: 1;
-  font-family: "Inter", sans-serif; /* include fallback */
-  font-weight: 500; /* medium weight */
-  font-style: normal; /* Medium is not valid, use normal or italic */
-  font-size: 20px; /* font size */
-  line-height: 1; /* 100% line-height = 1 */
-  letter-spacing: 0; /* 0% spacing = 0 */
-  color: #f0eeed;
-  margin: 0;
-`;
-
-const Group23 = styled.div`
-  width: 649px;
-  height: 248px;
-  position: absolute;
-  top: 107px;
-  left: 87px; /* change this */
-  transform: rotate(0deg);
-  opacity: 1;
-`;
-
-const COffees = styled.p`
-  color: #f0eeed;
-  width: 649px;
-  height: 112px;
-  position: absolute;
-  top: 35px;
-  left: 0px;
-  transform: rotate(0deg);
-  opacity: 1;
-  font-family: "High Tower Text", serif;
-  font-weight: 400;
-  font-style: normal; /* 'Regular' → normal */
-  font-size: 96px;
-  line-height: 1; /* 100% = 1 */
-  letter-spacing: 0;
-`;
-
-const LoremIpsum = styled.p`
-  width: 303px;
-  height: 24px;
-  position: absolute;
-  top: 220px;
-  left: 8px;
-  transform: rotate(0deg);
-  opacity: 1;
-  font-family: "Inter", sans-serif;
-  font-weight: 400;
-  font-style: normal; /* 'Regular' → normal */
-  font-size: 20px;
-  line-height: 1; /* 100% = 1 */
-  letter-spacing: 0;
-  color: #fbfbfb;
-`;
-const Symplyclever = styled.p`
-  width: 290px;
-  height: 44px;
+const Header = styled.header`
   position: absolute;
   top: 0;
-  left: 8px;
-  transform: rotate(0deg);
-  opacity: 1;
-  font-family: "Inter", sans-serif;
-  font-weight: 500; /* Medium weight */
-  font-style: normal; /* 'Medium' → normal in CSS */
-  font-size: 36px;
-  line-height: 1; /* 100% = 1 */
-  letter-spacing: 0;
-  color: #f0eeed;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
 `;
 
-const Divider73 = styled.div`
-  width: 496px;
-  height: 1px;
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const CoffeeIcon = styled.span`
+  font-size: 24px;
+`;
+
+const LogoText = styled.span`
+  font-weight: 600;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 1px;
+`;
+
+const NavButton = styled.button`
+  background: #2d3748;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #4a5568;
+  }
+`;
+
+const HeroContent = styled.div`
   position: absolute;
-  top: 404px;
-  left: 86px;
-  transform: rotate(0deg);
-  opacity: 1;
-  background-color: #ffffff;
+  top: 50%;
+  left: 50px;
+  transform: translateY(-50%);
+`;
+
+const SimplyClever = styled.p`
+  font-size: 18px;
+  font-weight: 500;
+  color: #f0eeed;
+  margin: 0 0 8px 0;
+  letter-spacing: 2px;
+`;
+
+const BestCoffee = styled.h1`
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-size: 52px;
+  font-weight: 400;
+  color: #f0eeed;
+  margin: 0 0 12px 0;
+  letter-spacing: 2px;
+`;
+
+const HeroSubtext = styled.p`
+  font-size: 14px;
+  color: #f0eeed;
+  margin: 0;
+  opacity: 0.9;
+`;
+
+const MainContent = styled.main`
+  width: 100%;
+  background: #f5f5f5;
+  padding: 40px 50px 60px;
+  min-height: calc(100vh - 300px);
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 40px;
+`;
+
+const Tab = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: 600;
+  color: ${(props) => (props.$active ? "#1f1f22" : "#bbb")};
+  cursor: pointer;
+  padding: 5px 0;
+  position: relative;
+  transition: color 0.3s;
+
+  &:hover {
+    color: ${(props) => (props.$active ? "#1f1f22" : "#888")};
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: ${(props) => (props.$active ? "#c9a86c" : "transparent")};
+    border-radius: 2px;
+  }
+`;
+
+const CurrencyButton = styled.button`
+  background: #1f1f22;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #333;
+  }
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Card = styled(Link)`
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+`;
+
+const CardImage = styled.div`
+  height: 160px;
+  overflow: hidden;
+  background: ${(props) => (props.$isIngredient ? "linear-gradient(135deg, #f8f4f0, #efe8e0)" : "#f5f5f5")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const IngredientEmoji = styled.span`
+  font-size: 64px;
+`;
+
+const CardInfo = styled.div`
+  padding: 12px 15px;
+  padding-right: 60px;
+`;
+
+const CardName = styled.h3`
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f1f22;
+  margin: 0 0 4px 0;
+`;
+
+const CardPrice = styled.p`
+  font-size: 13px;
+  color: #c9a86c;
+  margin: 0;
+  font-weight: 600;
+`;
+
+const QRCode = styled.div`
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #8B4513, #A0522D);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const QRIcon = styled.span`
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+const LoadingScreen = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 20px;
+  color: #666;
+  background: #f5f5f5;
+`;
+
+const ErrorScreen = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 20px;
+  color: #f44336;
+  background: #f5f5f5;
 `;

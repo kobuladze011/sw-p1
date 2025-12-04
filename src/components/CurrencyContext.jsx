@@ -36,25 +36,6 @@ export function CurrencyProvider({ children }) {
     <CurrencyContext.Provider
       value={{ currency, toggleCurrency, convertPrice }}
     >
-      {/* Top-left toggle button */}
-      <button
-        onClick={toggleCurrency}
-        style={{
-          position: "fixed",
-          top: "10px",
-          left: "10px",
-          zIndex: 1000,
-          padding: "8px 12px",
-          borderRadius: "5px",
-          border: "none",
-          background: "#007BFF",
-          color: "#fff",
-          cursor: "pointer",
-        }}
-      >
-        {currency}
-      </button>
-
       {children}
     </CurrencyContext.Provider>
   );
