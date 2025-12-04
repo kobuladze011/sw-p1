@@ -1,13 +1,6 @@
 {
   "ingredients": [
     {
-      "id": "3",
-      "name": "Sugar",
-      "price": 1,
-      "description": "White sugar",
-      "isInStock": true
-    },
-    {
       "id": "4",
       "name": "Chocolate Syrup",
       "price": 2,
@@ -56,10 +49,12 @@
       "title": "Latte",
       "ingredients": [
         "9",
-        "8"
+        "8",
+        "4"
       ],
       "description": "Classic milk coffee",
-      "isInStock": true
+      "isInStock": true,
+      "coffeePrice": 8
     },
     {
       "id": "2",

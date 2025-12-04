@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./Admin.module.css";
 import { useCoffeeAdmin } from "../hooks/useCoffeeAdmin";
+import { useCurrency } from "../components/CurrencyContext";
 
 export default function Admin() {
   const {
@@ -13,6 +14,7 @@ export default function Admin() {
     editCoffee,
     deleteCoffee,
   } = useCoffeeAdmin();
+  const { currency, convertPrice } = useCurrency();
 
   const [newIngredient, setNewIngredient] = useState({
     name: "",
@@ -139,9 +141,10 @@ export default function Admin() {
             {ingredients.map((i) => (
               <li key={i.id} className={styles.listItem}>
                 <span>
-                  <strong>{i.name}</strong> — ₾{i.price} —{" "}
-                  {i.isInStock ? "Available" : "Out of stock"}
+                  <strong>{i.name}</strong> — {convertPrice(i.price)} {currency}{" "}
+                  — {i.isInStock ? "Available" : "Out of stock"}
                 </span>
+
                 <div className={styles.buttonGroup}>
                   <button
                     className={styles.button}
@@ -220,11 +223,14 @@ export default function Admin() {
           </div>
 
           <p className={styles.priceDisplay}>
-            Calculated Price: ₾
-            {2 +
-              newCoffee.ingredients
-                .map((id) => ingredients.find((i) => i.id === id)?.price || 0)
-                .reduce((a, b) => a + b, 0)}
+            Calculated Price:{" "}
+            {convertPrice(
+              2 +
+                newCoffee.ingredients
+                  .map((id) => ingredients.find((i) => i.id === id)?.price || 0)
+                  .reduce((a, b) => a + b, 0)
+            )}{" "}
+            {currency}
           </p>
 
           <button type="submit" className={styles.button}>
@@ -246,14 +252,17 @@ export default function Admin() {
             {coffees.map((c) => (
               <li key={c.id} className={styles.listItem}>
                 <div>
-                  <strong>{c.title}</strong> —
-                  {2 +
-                    c.ingredients
-                      .map(
-                        (id) => ingredients.find((i) => i.id === id)?.price || 0
-                      )
-                      .reduce((a, b) => a + b, 0)}
-                  ₾ — {c.isInStock ? "Available" : "Out of stock"}
+                  <strong>{c.title}</strong> —{" "}
+                  {convertPrice(
+                    2 +
+                      c.ingredients
+                        .map(
+                          (id) =>
+                            ingredients.find((i) => i.id === id)?.price || 0
+                        )
+                        .reduce((a, b) => a + b, 0)
+                  )}{" "}
+                  {currency} — {c.isInStock ? "Available" : "Out of stock"}
                   <div
                     style={{
                       fontSize: "0.9rem",
