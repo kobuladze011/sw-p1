@@ -1,0 +1,106 @@
+{
+  "ingredients": [
+    {
+      "id": "3",
+      "name": "Sugar",
+      "price": 1,
+      "description": "White sugar",
+      "isInStock": true
+    },
+    {
+      "id": "4",
+      "name": "Chocolate Syrup",
+      "price": 2,
+      "description": "Sweet chocolate syrup",
+      "isInStock": true
+    },
+    {
+      "id": "5",
+      "name": "Caramel Syrup",
+      "price": 2,
+      "description": "Sweet caramel syrup",
+      "isInStock": true
+    },
+    {
+      "id": "6",
+      "name": "Whipped Cream",
+      "price": 2,
+      "description": "Creamy topping",
+      "isInStock": true
+    },
+    {
+      "id": "7",
+      "name": "Cinnamon",
+      "price": 1,
+      "description": "Ground cinnamon spice",
+      "isInStock": true
+    },
+    {
+      "id": "8",
+      "name": "Vanilla Syrup",
+      "price": 2,
+      "description": "Sweet vanilla syrup",
+      "isInStock": true
+    },
+    {
+      "id": "9",
+      "name": "Hazelnut Syrup",
+      "price": 2,
+      "description": "Sweet hazelnut flavor",
+      "isInStock": true
+    }
+  ],
+  "coffees": [
+    {
+      "id": "1",
+      "title": "Latte",
+      "ingredients": [
+        "9",
+        "8"
+      ],
+      "description": "Classic milk coffee",
+      "isInStock": true
+    },
+    {
+      "id": "2",
+      "title": "Cappuccino",
+      "ingredients": [
+        "7",
+        "5"
+      ],
+      "description": "Coffee with milk foam and cinnamon",
+      "isInStock": true,
+      "coffeePrice": 8
+    },
+    {
+      "id": "3",
+      "title": "Mocha",
+      "ingredients": [
+        "4"
+      ],
+      "description": "Coffee with chocolate syrup",
+      "isInStock": true,
+      "coffeePrice": 6
+    },
+    {
+      "id": "4",
+      "title": "Caramel Latte",
+      "ingredients": [
+        "5"
+      ],
+      "description": "Coffee with caramel syrup",
+      "isInStock": true,
+      "coffeePrice": 6
+    },
+    {
+      "id": "5",
+      "title": "Vanilla Coffee",
+      "ingredients": [
+        "8"
+      ],
+      "description": "Coffee with vanilla syrup",
+      "isInStock": true,
+      "coffeePrice": 6
+    }
+  ]
+}
